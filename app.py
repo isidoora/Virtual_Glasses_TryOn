@@ -1,13 +1,17 @@
 import av
 import cv2
 import numpy as np
-import mediapipe as mp
 import streamlit as st
 from streamlit_webrtc import webrtc_streamer, VideoProcessorBase
 from PIL import Image
 import os
-
-mp_face_mesh = mp.solutions.face_mesh
+try:
+    from mediapipe.python.solutions.face_mesh import FaceMesh
+except ImportError:
+    import mediapipe as mp
+    FaceMesh = mp.solutions.face_mesh.FaceMesh
+# import mediapipe as mp
+# mp_face_mesh = mp.solutions.face_mesh
 
 # ---------------------------
 # LOAD GLASSES
@@ -87,7 +91,13 @@ class VideoProcessor(VideoProcessorBase):
         self.selected_glasses = 0
         self.face_shape = "Detecting..."
         self.recommendation = ""
-        self.face_mesh = mp_face_mesh.FaceMesh(
+        # self.face_mesh = mp_face_mesh.FaceMesh(
+        #     max_num_faces=1,
+        #     refine_landmarks=True,
+        #     min_detection_confidence=0.5,
+        #     min_tracking_confidence=0.5
+        # )
+        self.face_mesh = FaceMesh(
             max_num_faces=1,
             refine_landmarks=True,
             min_detection_confidence=0.5,
